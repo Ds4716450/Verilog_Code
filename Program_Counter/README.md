@@ -1,43 +1,18 @@
-# Program Counter (PC)
-
-## Overview
-
-A Program Counter (PC) is a sequential digital circuit used in a processor to store the address of the next instruction to be executed.
-
-## Function
-
-The Program Counter:
-
-- Stores the current instruction address.
-- Increments to point to the next instruction.
-- Can be loaded with a new address during jump/branch operations.
-- Updates on the active clock edge.
-- Can be reset to a known value.
-
-## RTL Design
-
-The Program Counter is implemented using Verilog HDL.
-
-### Main Signals
-
-| Signal | Direction | Description |
-|--------|-----------|-------------|
-| clk | Input | Clock signal |
-| reset | Input | Reset signal |
-| pc_next | Input | Next PC value |
-| pc | Output | Current program counter value |
-
-## Files
-
-# Program Counter (PC)
+# Program Counter (PC) using Verilog HDL
 
 ## 1. Project Overview
 
-A Program Counter (PC) is a sequential circuit used in a processor
-to store the address of the next instruction to be executed.
+A Program Counter (PC) is a fundamental sequential circuit used in a processor to store the address of the current instruction and determine the address of the next instruction.
 
-The PC is updated on every active clock edge and can be reset to
-a known initial address.
+In this project, a 4-bit Program Counter is designed and implemented using Verilog HDL.
+
+The design supports:
+
+- Reset
+- Enable control
+- Sequential PC increment
+- Loading an external address
+- Clocked operation
 
 ---
 
@@ -45,77 +20,56 @@ a known initial address.
 
 The Program Counter performs the following operations:
 
-1. Reset the PC to a known value.
-2. Increment the PC on every clock cycle.
-3. Provide the current instruction address.
-4. Support loading of a new address when required.
+1. Reset the PC to `0`.
+2. Increment the PC by `1` during normal operation.
+3. Load an external address when `load = 1`.
+4. Update the PC only when `en = 1`.
+5. Hold the current PC value when `en = 0`.
+
+The next value of the Program Counter is selected using a multiplexer between:
+
+- `PC + 1`
+- External `data`
 
 ---
 
 ## 3. Block Diagram
 
-![Program Counter](Simulation/Program_Counter.JPG)
+The following block diagram illustrates the internal architecture, control signals, feedback path, and data flow of the Program Counter.
 
----
+![Program Counter Block Diagram](Block_Diagram/Program_Counter_Block_Diagram.jpeg)
 
-## 4. RTL Design
+### Block Diagram Explanation
 
-The RTL implementation is available in:
+The Program Counter consists of three main functional blocks:
 
-`RTL/Program_Counter.v`
+**1. Incrementer**
 
----
-
-## 5. Testbench
-
-The verification environment is available in:
-
-`Testbench/Program_Counter_tb.v`
-
-The testbench verifies:
-
-- Reset operation
-- Clock operation
-- PC increment
-- Output behavior
-
----
-
-## 6. Simulation
-
-Simulation results and waveform information are provided in:
-
-`Simulation/`
-
----
-
-## 7. Example Operation
+The incrementer generates the next sequential address by adding `1` to the current PC value.
 
 ```text
-Reset
-  |
-  v
-PC = 0
-  |
-  v
-Clock
-  |
-  v
-PC = PC + 1
-  |
-  v
-Clock
-  |
-  v
-PC = PC + 1- `Program_Counter.v` - RTL design
-- `Program_Counter_tb.v` - Testbench
-- `Program_Counter.JPG` - Block diagram
-- `README.md` - Project documentation
+PC + 1
 
-## Simulation
+---
 
-Example using Icarus Verilog:
+## 4. Main Signals
 
-```bash
-iverilog -o sim Program_Counter.v Program_Counter_tb.v
-vvp sim
+| Signal | Direction | Width | Description |
+|--------|-----------|-------|-------------|
+| `clk` | Input | 1-bit | Positive-edge clock |
+| `rst` | Input | 1-bit | Active-high reset |
+| `en` | Input | 1-bit | Program Counter update enable |
+| `load` | Input | 1-bit | MUX select signal |
+| `data` | Input | 4-bit | External address/data |
+| `q` | Output | 4-bit | Current Program Counter value |
+
+---
+
+## 5. Operation
+
+### 5.1 Reset Operation
+
+When:
+
+```text
+rst = 1
