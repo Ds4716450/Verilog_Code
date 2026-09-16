@@ -1,0 +1,23 @@
+# Compiled simulation files
+sim
+*.out
+*.exe
+
+# Simulation waveforms
+*.vcd
+*.fst
+*.wlf
+
+# EDA generated files
+*.log
+*.jou
+*.pb
+*.qws
+
+# Temporary files
+*.tmp
+*.bak
+
+# OS files
+Thumbs.db
+.DS_Store
